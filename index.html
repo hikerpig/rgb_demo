@@ -114,11 +114,14 @@
         var horiMax = horizonalParams[0], horiSecond = horizonalParams[1], smallest = horizonalParams[2];
         var maxKey = R == horiMax ? 'r': (G == horiMax ? 'g': 'b');
         var minKey = G == smallest ? 'g': (B == smallest ? 'b': 'r'); // in case the three are the same
+        var midKey = B == horiSecond ? 'b': (R == horiSecond ? 'r': 'g');
         // var
-            xSegsP = horiMax / diff >> 0,
-            xSegsN = ( 256 - horiMax ) / diff >> 0,
+            // xSegsP = ( 255 - horiMax ) / diff >> 0,
+            xSegsP = ( 255 - horiMax ) / diff >> 0,
+            xSegsN = ( 255 - horiSecond ) / diff >> 0,
+            // xSegsN = ( 255 - smallest ) / diff >> 0,
             ySegsP = smallest / diff >> 0,
-            ySegsN = ( 256 - horiMax ) / diff >> 0,
+            ySegsN = ( 255 - horiMax ) / diff >> 0,
             y=0;
 
         // @function   Calculate the color based on position and center color
@@ -140,7 +143,7 @@
             b: 0
           };
           _cX[maxKey] += shiftDiff;
-          _cX[minKey] -= shiftDiff;
+          _cX[midKey] -= shiftDiff;
 
           return {
             r: ( rY + _cX.r ) + centerColor.r,
@@ -150,9 +153,9 @@
 
         }
         var i, j;
-        for(i=-ySegsN; i<=ySegsP; i++){
-          var j = -xSegsN;
-          for(; j<xSegsP; j++){
+        for(i=-xSegsN; i<=xSegsP; i++){
+          var j = -ySegsN;
+          for(; j <= ySegsP; j++){
             var colorParams = calculateOneBlock(i, j, color);
             var _point = new Point(i, j, colorParams);            
             blocks.push(_point);
@@ -173,7 +176,7 @@
         }
         return output;
       }
-      function draw(blocks){
+      function draw(blocks, centerColor){
         var blocks = blocks || window.blocks;
 
         if(!blocks || !blocks.length){ySegsN - ySegsP
@@ -181,14 +184,17 @@
           return false;
         }
         // set the center point's position
-        var xOffset = ( xSegsN - xSegsP )/2, yOffset = ( ySegsN - ySegsP) / 2;
+        var xOffset = ( xSegsN - xSegsP ) / 2, yOffset = ( ySegsN - ySegsP) / 2;
+        var centerColor = centerColor || {r:127, g:127, b:127};
+        var centerLight = (centerColor.r + centerColor.g + centerColor.b) / 3;
         $blockContainer.css({
-          top:   (windowHeight/4) + (yOffset ) * (gridWidth + gapWidth) + 'px', // why 4?
+          top:   (windowHeight/2) + ( yOffset ) * (gridWidth + gapWidth) + 'px', // why 4?
           left:  (windowWidth/2) + xOffset * (gridWidth + gapWidth) + 'px'
         })
         $('#color-block-container').css({
-          height:  (255/diff>>0) * (gridWidth + gapWidth) + 'px' // make sure we can scroll to the overflow
+          height:  (255/diff>>0 + 1) * (gridWidth + gapWidth) + 'px' // make sure we can scroll to the overflow
         });
+        window.blockContainer = $blockContainer; //test
 
         $blockContainer.hide();
         var index = blocks.length;
