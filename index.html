@@ -25,6 +25,14 @@
     #center-block .color-block{
       position: absolute;
     }
+    #color-hint-container{
+      position: fixed;
+      top: 200px;
+      left: 5%;      
+    }
+    #color-hint{
+
+    }
     .color-block:hover{
       -webkit-transform: scale(2);
       -moz-transform: scale(2);
@@ -39,8 +47,9 @@
       <div>
         <input type="text" id='inputer' placeholder="You can enter the rgb value">
         <button id="applyBtn">See the change</button>
-        <div style='margin-top:10px;'>
-          <p >Your mouse is pointing at:   <span id="color-hint"></span> </p>
+        <div id='color-hint-container'>
+          <p >Your mouse is pointing at:   </p>
+          <p id="color-hint"></p> 
         </div>
       </div>
       <div id="color-block-container">
@@ -119,23 +128,24 @@
           // vertical
           var lightDiff = diff * y;
           lightDiff = - lightDiff;  // 转换朝下递增的top值和平常朝上的axis
-          rY  = R + lightDiff;
-          gY  = G + lightDiff; 
-          bY  = B + lightDiff;
+          rY = lightDiff;
+          gY = lightDiff;
+          bY = lightDiff;
+
           // horizonal 
           var shiftDiff = diff * x;
           var _cX = {
-            r: R,
-            g: G,
-            b: B
+            r: 0,
+            g: 0,
+            b: 0
           };
           _cX[maxKey] += shiftDiff;
           _cX[minKey] -= shiftDiff;
 
           return {
-            r: ( rY + _cX.r )/2,
-            g: ( gY + _cX.g )/2,
-            b: ( bY + _cX.b )/2
+            r: ( rY + _cX.r ) + centerColor.r,
+            g: ( gY + _cX.g ) + centerColor.g,
+            b: ( bY + _cX.b ) + centerColor.b
           }
 
         }
