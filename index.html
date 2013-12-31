@@ -17,7 +17,8 @@
       position: relative;
       width: 100%;
       margin-bottom: 100px;
-      /*margin-top: 50px;*/
+      margin-top: 50px;
+      z-index: 10;
     }
     #center-block{
       position: absolute;
@@ -30,7 +31,8 @@
     #color-hint-container{
       position: fixed;
       top: 200px;
-      left: 5%;      
+      left: 5%;  
+      z-index: 20;    
     }
     #color-hint{
 
@@ -69,8 +71,8 @@
       var columns, rows;
       var blocks=[];
       var $input, $blockContainer, $colorHint, $applyBtn;
-      var diff = 8;
-      var gridWidth = 15, gapWidth = 5;  // @info,  change the block size here
+      var diff = 10;
+      var gridWidth = 20, gapWidth = 5;  // @info,  change the block size here
       var windowHeight, windowWidth;          
       windowHeight = $(window).height(),
       windowWidth  = $(window).width();
@@ -119,12 +121,11 @@
         var minKey = G == smallest ? 'g': (B == smallest ? 'b': 'r'); // in case the three are the same
         var midKey = B == horiSecond ? 'b': (R == horiSecond ? 'r': 'g');
         // var
-            // xSegsP = ( 255 - horiMax ) / diff >> 0,
-            xSegsP = ( 255 - horiMax ) / diff >> 0,
-            xSegsN = ( 255 - horiSecond ) / diff >> 0,
-            // xSegsN = ( 255 - smallest ) / diff >> 0,
-            ySegsP = smallest / diff >> 0,
-            ySegsN = ( 255 - horiMax ) / diff >> 0,
+
+            xSegsP = (255 / diff) >> 0,
+            xSegsN = (255 / diff) >> 0,
+            ySegsP = (255 / diff) >> 0,
+            ySegsN = (255 / diff) >> 0,
             y=0;
 
         // @function   Calculate the color based on position and center color
@@ -175,7 +176,7 @@
           var r = parseInt(value.slice(0, 2), 16),
               g = parseInt(value.slice(2, 4), 16),
               b = parseInt(value.slice(4, 6), 16);
-          output = [r, g, b].join(',');
+          output = [r, g, b].join(','); 
         }
         return output;
       }
@@ -187,12 +188,12 @@
           return false;
         }
         // set the center point's position
-        var xOffset = ( xSegsN - xSegsP ) / 2, yOffset = ( ySegsN - ySegsP) / 2;
+        var xOffset = ( xSegsN + xSegsP ) / 2, yOffset = ( ySegsN + ySegsP) / 2;
         var centerColor = centerColor || {r:127, g:127, b:127};
         var centerLight = (centerColor.r + centerColor.g + centerColor.b) / 3;
         $blockContainer.css({
-          top:   (windowHeight/2) * ratioToWindow + ( yOffset ) * (gridWidth + gapWidth) + 'px', // why 4?
-          left:  (windowWidth/2) * ratioToWindow + xOffset * (gridWidth + gapWidth) + 'px'
+          top:   ( yOffset ) * (gridWidth + gapWidth) + 'px', 
+          left:  windowWidth * ratioToWindow /2 + 'px'
         }); // inaccurate , but enough to use
         $('#color-block-container').css({
           height: ( (255/diff + 1) >>0  ) * (gridWidth + gapWidth) + 'px' // make sure we can scroll to the overflow
