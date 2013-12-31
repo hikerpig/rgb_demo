@@ -16,6 +16,8 @@
     #color-block-container{
       position: relative;
       width: 100%;
+      margin-bottom: 100px;
+      /*margin-top: 50px;*/
     }
     #center-block{
       position: absolute;
@@ -72,6 +74,7 @@
       var windowHeight, windowWidth;          
       windowHeight = $(window).height(),
       windowWidth  = $(window).width();
+      var ratioToWindow = 0.9;
 
       // @class   
       function Point(x,y,color){
@@ -188,12 +191,14 @@
         var centerColor = centerColor || {r:127, g:127, b:127};
         var centerLight = (centerColor.r + centerColor.g + centerColor.b) / 3;
         $blockContainer.css({
-          top:   (windowHeight/2) + ( yOffset ) * (gridWidth + gapWidth) + 'px', // why 4?
-          left:  (windowWidth/2) + xOffset * (gridWidth + gapWidth) + 'px'
-        })
+          top:   (windowHeight/2) * ratioToWindow + ( yOffset ) * (gridWidth + gapWidth) + 'px', // why 4?
+          left:  (windowWidth/2) * ratioToWindow + xOffset * (gridWidth + gapWidth) + 'px'
+        }); // inaccurate , but enough to use
         $('#color-block-container').css({
-          height:  (255/diff>>0 + 1) * (gridWidth + gapWidth) + 'px' // make sure we can scroll to the overflow
-        });
+          height: ( (255/diff + 1) >>0  ) * (gridWidth + gapWidth) + 'px' // make sure we can scroll to the overflow
+        }); 
+        // var visualWidth = 
+        // if( )
         window.blockContainer = $blockContainer; //test
 
         $blockContainer.hide();
